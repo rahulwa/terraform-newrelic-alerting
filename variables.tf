@@ -24,17 +24,6 @@ variable "nw_service_name" {
   description = "New Relic app name that you want to monitor"
 }
 
-variable "devops_opsgenie_api_key" {
-  type        = "string"
-  description = "OpeGenie api key for DevOps team"
-  default     = "5d71f199-2178-46fa-a462-1f1a606b4e3b"
-}
-
-variable "opsgenie_api_key" {
-  type        = "string"
-  description = "OpeGenie api key for Service team"
-}
-
 variable "runbook_url" {
   type        = "string"
   description = "URL of runbook for this service"
