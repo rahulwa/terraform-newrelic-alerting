@@ -5,7 +5,7 @@ variable "service_name" {
 
 variable "severity" {
   type        = "string"
-  description = "severity level of alert like `s1`, `s2` or `s3`"
+  description = "severity level of alert like `sev1`, `sev2` or `sev3`"
 }
 
 variable "stage" {
@@ -59,6 +59,13 @@ variable "not_running_process_where_query" {
   type        = "string"
   description = "the where cluase of process nrql for selecting processes. like `\"commandName IN ('supervisord', 'gunicorn')\"`"
 }
+
+variable "select_request_uri_like" {
+  type        = "string"
+  description = "To select specific API path for alerting, like `'%service%'`."
+  default     = "%"
+}
+
 
 variable "error_5xx_thresold_count" {
   type        = "string"

@@ -92,7 +92,7 @@ resource "newrelic_nrql_alert_condition" "5xx_error" {
   }
 
   nrql {
-    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND response.status >= '500' FACET request.uri"
+    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -115,7 +115,7 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}')"
+    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -138,7 +138,7 @@ resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}')"
+    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
