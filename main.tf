@@ -10,3 +10,7 @@ locals {
 resource "newrelic_alert_policy" "this" {
   name = "${local.alarm_label_prefix}"
 }
+
+data "newrelic_application" "app" {
+  name = "${var.nw_service_name}"
+}
