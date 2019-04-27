@@ -3,8 +3,8 @@ resource "newrelic_infra_alert_condition" "cpu_alert" {
   policy_id  = "${newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_CPU_Utilisation"
   type       = "infra_metric"
-  event      = "cpuPercent"
-  select     = "SystemSample"
+  event      = "SystemSample"
+  select     = "cpuPercent"
   comparison = "above"
   where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
 
@@ -20,8 +20,8 @@ resource "newrelic_infra_alert_condition" "memory_alert" {
   policy_id  = "${newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_Memory_Utilisation"
   type       = "infra_metric"
-  event      = "memoryFreeBytes"
-  select     = "SystemSample"
+  event      = "SystemSample"
+  select     = "memoryFreeBytes"
   comparison = "below"
   where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
 
@@ -37,8 +37,8 @@ resource "newrelic_infra_alert_condition" "disk_alert" {
   policy_id  = "${newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_Disk_Utilisation"
   type       = "infra_metric"
-  event      = "diskFreePercent"
-  select     = "SystemSample"
+  event      = "SystemSample"
+  select     = "diskFreePercent"
   comparison = "below"
   where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
 
@@ -92,7 +92,7 @@ resource "newrelic_nrql_alert_condition" "5xx_error" {
   }
 
   nrql {
-    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
+    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -115,17 +115,17 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
+    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
     since_value = "5"
   }
 
   value_function = "single_value"
 }
 
-resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
+resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
   count       = "${var.percentile95_transaction_thresold_time != "" ? 1 : 0}"
   policy_id   = "${newrelic_alert_policy.this.id}"
-  name        = "${local.alarm_label_prefix}:95Percentile_Transaction_Call_Slow"
+  name        = "${local.alarm_label_prefix}:95Percentile_Web_Transaction_Call_Slow"
   enabled     = true
   runbook_url = "${var.runbook_url}"
 
@@ -138,9 +138,112 @@ resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_request_uri_like}' FACET request.uri"
+    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
   value_function = "single_value"
+}
+
+resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
+  count       = "${var.percentile99_transaction_thresold_time != "" ? 1 : 0}"
+  policy_id   = "${var.newrelic_alert_policy_id}"
+  name        = "${local.alarm_label_prefix}:95Percentile_Transaction_Call_Slow"
+  enabled     = true
+  runbook_url = "${var.runbook_url}"
+
+  term {
+    duration      = 5
+    operator      = "above"
+    priority      = "critical"
+    threshold     = "${var.percentile99_transaction_thresold_time}"
+    time_function = "all"
+  }
+
+  nrql {
+    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
+    since_value = "5"
+  }
+
+  value_function = "single_value"
+}
+
+resource "newrelic_alert_condition" "apdex" {
+  count     = "${var.apdex_thresold != "" ? 1 : 0}"
+  policy_id = "${var.newrelic_alert_policy_id}"
+
+  name            = "${local.alarm_label_prefix}:Apdex_Error"
+  type            = "apm_app_metric"
+  entities        = ["${data.newrelic_application.app.id}"]
+  metric          = "apdex"
+  runbook_url     = "${var.runbook_url}"
+  condition_scope = "application"
+
+  term {
+    duration      = 5
+    operator      = "below"
+    priority      = "critical"
+    threshold     = "${var.apdex_thresold}"
+    time_function = "all"
+  }
+}
+
+resource "newrelic_alert_condition" "error_percentage" {
+  count     = "${var.error_percentage_thresold != "" ? 1 : 0}"
+  policy_id = "${var.newrelic_alert_policy_id}"
+
+  name            = "${local.alarm_label_prefix}:Error_Percentage"
+  type            = "apm_app_metric"
+  entities        = ["${data.newrelic_application.app.id}"]
+  metric          = "error_percentage"
+  runbook_url     = "${var.runbook_url}"
+  condition_scope = "application"
+
+  term {
+    duration      = 5
+    operator      = "above"
+    priority      = "critical"
+    threshold     = "${var.error_percentage_thresold}"
+    time_function = "all"
+  }
+}
+
+resource "newrelic_alert_condition" "response_time_background" {
+  count     = "${var.response_time_background_thresold != "" ? 1 : 0}"
+  policy_id = "${var.newrelic_alert_policy_id}"
+
+  name            = "${local.alarm_label_prefix}:Response_Time_Background_Slow"
+  type            = "apm_app_metric"
+  entities        = ["${data.newrelic_application.app.id}"]
+  metric          = "response_time_background"
+  runbook_url     = "${var.runbook_url}"
+  condition_scope = "application"
+
+  term {
+    duration      = 5
+    operator      = "above"
+    priority      = "critical"
+    threshold     = "${var.response_time_background_thresold}"
+    time_function = "all"
+  }
+}
+
+resource "newrelic_alert_condition" "response_time_web" {
+  count     = "${var.response_time_web_thresold != "" ? 1 : 0}"
+  policy_id = "${var.newrelic_alert_policy_id}"
+
+  name            = "${local.alarm_label_prefix}:Response_Time_Web_Slow"
+  type            = "apm_app_metric"
+  entities        = ["${data.newrelic_application.app.id}"]
+  metric          = "response_time_web"
+  runbook_url     = "${var.runbook_url}"
+  condition_scope = "application"
+
+  term {
+    duration      = 5
+    operator      = "above"
+    priority      = "critical"
+    threshold     = "${var.response_time_web_thresold}"
+    time_function = "all"
+  }
 }

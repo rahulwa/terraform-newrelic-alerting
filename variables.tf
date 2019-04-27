@@ -60,12 +60,17 @@ variable "not_running_process_where_query" {
   description = "the where cluase of process nrql for selecting processes. like `\"commandName IN ('supervisord', 'gunicorn')\"`"
 }
 
-variable "select_request_uri_like" {
+variable "select_transtion_request_uri_like" {
   type        = "string"
   description = "To select specific API path for alerting, like `'%service%'`."
   default     = "%"
 }
 
+variable "select_transcation_name_like" {
+  type        = "string"
+  description = "To select specific function name for alerting, like `'%function%'`."
+  default     = "%"
+}
 
 variable "error_5xx_thresold_count" {
   type        = "string"
@@ -77,7 +82,38 @@ variable "percentile95_database_transcation_thresold_time" {
   description = "The maximum time taken by 95% of database transcations greater than it in whole 5 minutes, triggers the alert."
 }
 
+variable "percentile95_web_transaction_thresold_time" {
+  type        = "string"
+  description = "The maximum time taken by 95% of web transcations greater than it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
 variable "percentile95_transaction_thresold_time" {
   type        = "string"
   description = "The maximum time taken by 95% of transcations greater than it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
+variable "apdex_thresold" {
+  type        = "string"
+  description = "The New Relic apdex below than it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
+variable "error_percentage_thresold" {
+  type        = "string"
+  description = "The New Relic error precentage greater than it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
+variable "response_time_background_thresold" {
+  type        = "string"
+  description = "The responce time for background transcations greater then it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
+variable "response_time_web_thresold" {
+  type        = "string"
+  description = "The responce time for web transcations greater then it in whole 5 minutes, triggers the alert."
+  default     = ""
 }
