@@ -29,7 +29,7 @@ variable "runbook_url" {
   description = "URL of runbook for this service"
 }
 
-variable "cpu_utilisation_thresold_duration" {
+variable "cpu_utilisation_thresold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if CPU utlization was more than 90% in this interval for whole time."
 }
@@ -44,13 +44,13 @@ variable "disk_free_thresold_percentage" {
   description = "The minimum percentage available for free disk in whole 5 minutes, triggers the alert."
 }
 
-variable "host_not_responding_thresold_duration" {
+variable "host_not_responding_thresold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if agent does not respont in this interval for whole time."
   default     = ""
 }
 
-variable "service_unavailable_thresold_duration" {
+variable "service_unavailable_thresold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if service was not running in this interval for whole time."
 }
@@ -77,7 +77,7 @@ variable "error_5xx_thresold_count" {
   description = "The maximum count of 5XX errors in whole 5 minutes, triggers the alert."
 }
 
-variable "percentile95_database_transcation_thresold_time" {
+variable "percentile95_database_transcation_thresold_seconds" {
   type        = "string"
   description = "The maximum time taken by 95% of database transcations greater than it in whole 5 minutes, triggers the alert."
 }
@@ -88,7 +88,7 @@ variable "percentile95_web_transaction_thresold_time" {
   default     = ""
 }
 
-variable "percentile95_transaction_thresold_time" {
+variable "percentile95_transaction_thresold_seconds" {
   type        = "string"
   description = "The maximum time taken by 95% of transcations greater than it in whole 5 minutes, triggers the alert."
   default     = ""
@@ -106,13 +106,13 @@ variable "error_percentage_thresold" {
   default     = ""
 }
 
-variable "response_time_background_thresold" {
+variable "response_time_background_thresold_seconds" {
   type        = "string"
   description = "The responce time for background transcations greater then it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "response_time_web_thresold" {
+variable "response_time_web_thresold_seconds" {
   type        = "string"
   description = "The responce time for web transcations greater then it in whole 5 minutes, triggers the alert."
   default     = ""
