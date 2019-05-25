@@ -6,7 +6,7 @@ resource "newrelic_infra_alert_condition" "cpu_alert" {
   event      = "SystemSample"
   select     = "cpuPercent"
   comparison = "above"
-  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
+  where      = "${local.select_hosts_where_clause}"
 
   critical {
     duration      = "${var.cpu_utilisation_thresold_duration_minutes}"
@@ -23,7 +23,7 @@ resource "newrelic_infra_alert_condition" "memory_alert" {
   event      = "SystemSample"
   select     = "memoryFreeBytes"
   comparison = "below"
-  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
+  where      = "${local.select_hosts_where_clause}"
 
   critical {
     duration      = 5
@@ -40,7 +40,7 @@ resource "newrelic_infra_alert_condition" "disk_alert" {
   event      = "SystemSample"
   select     = "diskFreePercent"
   comparison = "below"
-  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
+  where      = "${local.select_hosts_where_clause}"
 
   critical {
     duration      = 5
@@ -54,7 +54,7 @@ resource "newrelic_infra_alert_condition" "host_not_reporting" {
   policy_id = "${newrelic_alert_policy.this.id}"
   name      = "${local.alarm_label_prefix}:Host_Not_Reporting"
   type      = "infra_host_not_reporting"
-  where     = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
+  where     = "${local.select_hosts_where_clause}"
 
   critical {
     duration = "${var.host_not_responding_thresold_duration_minutes}"
@@ -68,7 +68,7 @@ resource "newrelic_infra_alert_condition" "service_not_running" {
   type          = "infra_process_running"
   comparison    = "equal"
   process_where = "${var.not_running_process_where_query}"               # like: `"commandName IN ('supervisord', 'gunicorn')"`
-  where         = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
+  where         = "${local.select_hosts_where_clause}"
 
   critical {
     duration = "${var.service_unavailable_thresold_duration_minutes}"
@@ -247,3 +247,29 @@ resource "newrelic_alert_condition" "response_time_web" {
     time_function = "all"
   }
 }
+
+########################### Generic NRQL alerts #############################################
+resource "newrelic_nrql_alert_condition" "nrql_generic" {
+  count       = "${var.nrql_generic_name != "" && var.nrql_generic_query != "" && var.nrql_generic_threshold != "" ? 1 : 0}"
+  policy_id   = "${var.newrelic_alert_policy_id}"
+  name        = "${module.alarm_label_prefix.id}:${var.nrql_generic_name}"
+  enabled     = true
+  runbook_url = "${var.runbook_url}"
+
+  term {
+    duration      = 5
+    operator      = "${var.nrql_generic_operator}"
+    priority      = "${var.priority}"
+    threshold     = "${var.nrql_generic_threshold}"
+    time_function = "all"
+  }
+
+  nrql {
+    query       = "${var.nrql_generic_query}"
+    since_value = "5"
+  }
+
+  value_function = "single_value"
+}
+
+################################################################################################

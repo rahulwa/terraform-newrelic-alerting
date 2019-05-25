@@ -117,3 +117,35 @@ variable "response_time_web_thresold_seconds" {
   description = "The responce time for web transcations greater then it in whole 5 minutes, triggers the alert."
   default     = ""
 }
+
+variable "select_hosts_where_clause" {
+  type        = "string"
+  description = "The where query for selecting hosts in infra alerts."
+  default     = ""
+}
+
+########################### Generic NRQL alerts #############################################
+variable "nrql_generic_name" {
+  type        = "string"
+  description = "The name of alert condition."
+  default     = ""
+}
+
+variable "nrql_generic_query" {
+  type        = "string"
+  description = "The NRQL query of alert."
+  default     = ""
+}
+
+variable "nrql_generic_operator" {
+  type        = "string"
+  description = "above, below, or equal."
+  default     = "above"
+}
+
+variable "nrql_generic_threshold" {
+  type        = "string"
+  description = "The threshold of the alert."
+  default     = ""
+}
+################################################################################################
