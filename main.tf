@@ -12,5 +12,5 @@ resource "newrelic_alert_policy" "this" {
 }
 
 data "newrelic_application" "app" {
-  name = "${var.nw_service_name}"
+  name = "${var.nr_service_name}"
 }

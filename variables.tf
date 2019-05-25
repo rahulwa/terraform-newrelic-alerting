@@ -19,7 +19,7 @@ variable "attributes" {
   description = "Additional attributes to put in alert name prefix, e.g. `1`"
 }
 
-variable "nw_service_name" {
+variable "nr_service_name" {
   type        = "string"
   description = "New Relic app name that you want to monitor"
 }

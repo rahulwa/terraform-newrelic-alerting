@@ -6,7 +6,7 @@ resource "newrelic_infra_alert_condition" "cpu_alert" {
   event      = "SystemSample"
   select     = "cpuPercent"
   comparison = "above"
-  where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
+  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
 
   critical {
     duration      = "${var.cpu_utilisation_thresold_duration_minutes}"
@@ -23,7 +23,7 @@ resource "newrelic_infra_alert_condition" "memory_alert" {
   event      = "SystemSample"
   select     = "memoryFreeBytes"
   comparison = "below"
-  where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
+  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
 
   critical {
     duration      = 5
@@ -40,7 +40,7 @@ resource "newrelic_infra_alert_condition" "disk_alert" {
   event      = "SystemSample"
   select     = "diskFreePercent"
   comparison = "below"
-  where      = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
+  where      = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
 
   critical {
     duration      = 5
@@ -54,7 +54,7 @@ resource "newrelic_infra_alert_condition" "host_not_reporting" {
   policy_id = "${newrelic_alert_policy.this.id}"
   name      = "${local.alarm_label_prefix}:Host_Not_Reporting"
   type      = "infra_host_not_reporting"
-  where     = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
+  where     = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
 
   critical {
     duration = "${var.host_not_responding_thresold_duration_minutes}"
@@ -68,7 +68,7 @@ resource "newrelic_infra_alert_condition" "service_not_running" {
   type          = "infra_process_running"
   comparison    = "equal"
   process_where = "${var.not_running_process_where_query}"               # like: `"commandName IN ('supervisord', 'gunicorn')"`
-  where         = "(`apmApplicationNames` = '|${var.nw_service_name}|')"
+  where         = "(`apmApplicationNames` LIKE '%|${var.nr_service_name}|%')"
 
   critical {
     duration = "${var.service_unavailable_thresold_duration_minutes}"
@@ -92,7 +92,7 @@ resource "newrelic_nrql_alert_condition" "5xx_error" {
   }
 
   nrql {
-    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
+    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -115,7 +115,7 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
+    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
     since_value = "5"
   }
 
@@ -138,7 +138,7 @@ resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
+    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -161,7 +161,7 @@ resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nw_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
+    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
     since_value = "5"
   }
 
