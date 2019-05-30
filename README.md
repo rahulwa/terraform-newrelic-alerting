@@ -13,3 +13,5 @@ A Terraform module for New Relic alerting with following preconfigured alerts fo
 - Error Percentage
 - Response Time Background Slow
 - Response Time Web Slow
+
+For more info, look into [alerts.tf file](./alerts.tf).
