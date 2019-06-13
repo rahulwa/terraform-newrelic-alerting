@@ -29,28 +29,28 @@ variable "runbook_url" {
   description = "URL of runbook for this service"
 }
 
-variable "cpu_utilisation_thresold_duration_minutes" {
+variable "cpu_utilisation_threshold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if CPU utlization was more than 90% in this interval for whole time."
 }
 
-variable "memory_free_thresold_byte" {
+variable "memory_free_threshold_byte" {
   type        = "string"
   description = "The maximum byte available for free memory in whole 5 minutes, triggers the alert."
 }
 
-variable "disk_free_thresold_percentage" {
+variable "disk_free_threshold_percentage" {
   type        = "string"
   description = "The minimum percentage available for free disk in whole 5 minutes, triggers the alert."
 }
 
-variable "host_not_responding_thresold_duration_minutes" {
+variable "host_not_responding_threshold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if agent does not respont in this interval for whole time."
   default     = ""
 }
 
-variable "service_unavailable_thresold_duration_minutes" {
+variable "service_unavailable_threshold_duration_minutes" {
   type        = "string"
   description = "The duration in minutes, to trigger the alert if service was not running in this interval for whole time."
 }
@@ -72,47 +72,47 @@ variable "select_transcation_name_like" {
   default     = "%"
 }
 
-variable "error_5xx_thresold_count" {
+variable "error_5xx_threshold_count" {
   type        = "string"
   description = "The maximum count of 5XX errors in whole 5 minutes, triggers the alert."
 }
 
-variable "percentile95_database_transcation_thresold_seconds" {
+variable "percentile95_database_transcation_threshold_seconds" {
   type        = "string"
   description = "The maximum time taken by 95% of database transcations greater than it in whole 5 minutes, triggers the alert."
 }
 
-variable "percentile95_web_transaction_thresold_time" {
+variable "percentile95_web_transaction_threshold_time" {
   type        = "string"
   description = "The maximum time taken by 95% of web transcations greater than it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "percentile95_transaction_thresold_seconds" {
+variable "percentile95_transaction_threshold_seconds" {
   type        = "string"
   description = "The maximum time taken by 95% of transcations greater than it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "apdex_thresold" {
+variable "apdex_threshold" {
   type        = "string"
   description = "The New Relic apdex below than it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "error_percentage_thresold" {
+variable "error_percentage_threshold" {
   type        = "string"
   description = "The New Relic error precentage greater than it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "response_time_background_thresold_seconds" {
+variable "response_time_background_threshold_seconds" {
   type        = "string"
   description = "The responce time for background transcations greater then it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "response_time_web_thresold_seconds" {
+variable "response_time_web_threshold_seconds" {
   type        = "string"
   description = "The responce time for web transcations greater then it in whole 5 minutes, triggers the alert."
   default     = ""
