@@ -99,10 +99,33 @@ resource "newrelic_nrql_alert_condition" "5xx_error" {
   value_function = "single_value"
 }
 
+resource "newrelic_nrql_alert_condition" "5xx_percentage_error" {
+  count       = "${var.error_5xx_threshold_percentage != "" ? 1 : 0}"
+  policy_id   = "${var.newrelic_alert_policy_id}"
+  name        = "${module.alarm_label_prefix.id}:5XX_Errors_High"
+  enabled     = true
+  runbook_url = "${var.runbook_url}"
+
+  term {
+    duration      = "${var.duration_threshold_minutes}"
+    operator      = "above"
+    priority      = "${var.priority}"
+    threshold     = "${var.error_5xx_threshold_percentage}"
+    time_function = "all"
+  }
+
+  nrql {
+    query       = "SELECT percentage(count(*), where response.status >= '500') from Transaction WHERE appName IN ('${var.nr_service_name}') AND transactionType='Web' AND request.uri LIKE '${var.select_transtion_request_uri_like}' ${var.allow_facet == "true" ? "FACET name" : ""}"
+    since_value = "5"
+  }
+
+  value_function = "single_value"
+}
+
 resource "newrelic_nrql_alert_condition" "db_long_durantion" {
-  count       = "${var.percentile95_database_transcation_threshold_seconds != "" ? 1 : 0}"
+  count       = "${var.database_transcation_threshold_seconds != "" ? 1 : 0}"
   policy_id   = "${newrelic_alert_policy.this.id}"
-  name        = "${local.alarm_label_prefix}:95Percentile_Database_Call_Slow"
+  name        = "${local.alarm_label_prefix}:Database_Call_Slow"
   enabled     = true
   runbook_url = "${var.runbook_url}"
 
@@ -110,12 +133,12 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
     duration      = 5
     operator      = "above"
     priority      = "critical"
-    threshold     = "${var.percentile95_database_transcation_threshold_seconds}"
+    threshold     = "${var.database_transcation_threshold_seconds}"
     time_function = "any"
   }
 
   nrql {
-    query       = "SELECT percentile(databaseDuration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
+    query       = "SELECT percentile(databaseDuration, 90) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
     since_value = "5"
   }
 
@@ -123,9 +146,9 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
 }
 
 resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
-  count       = "${var.percentile95_web_transaction_threshold_seconds != "" ? 1 : 0}"
+  count       = "${var.web_transaction_threshold_seconds != "" ? 1 : 0}"
   policy_id   = "${newrelic_alert_policy.this.id}"
-  name        = "${local.alarm_label_prefix}:95Percentile_Web_Transaction_Call_Slow"
+  name        = "${local.alarm_label_prefix}:Web_Requests_High_Latency"
   enabled     = true
   runbook_url = "${var.runbook_url}"
 
@@ -133,12 +156,12 @@ resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
     duration      = 5
     operator      = "above"
     priority      = "critical"
-    threshold     = "${var.percentile95_web_transaction_threshold_seconds}"
+    threshold     = "${var.web_transaction_threshold_seconds}"
     time_function = "any"
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
+    query       = "SELECT percentile(duration, 90) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND request.uri LIKE '${var.select_transtion_request_uri_like}' FACET request.uri"
     since_value = "5"
   }
 
@@ -146,9 +169,9 @@ resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
 }
 
 resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
-  count       = "${var.percentile95_transaction_threshold_seconds != "" ? 1 : 0}"
+  count       = "${var.transaction_threshold_seconds != "" ? 1 : 0}"
   policy_id   = "${var.newrelic_alert_policy_id}"
-  name        = "${local.alarm_label_prefix}:95Percentile_Transaction_Call_Slow"
+  name        = "${local.alarm_label_prefix}:Transactions_High_Latency"
   enabled     = true
   runbook_url = "${var.runbook_url}"
 
@@ -156,12 +179,12 @@ resource "newrelic_nrql_alert_condition" "transaction_long_durantion" {
     duration      = 5
     operator      = "above"
     priority      = "critical"
-    threshold     = "${var.percentile95_transaction_threshold_seconds}"
+    threshold     = "${var.transaction_threshold_seconds}"
     time_function = "all"
   }
 
   nrql {
-    query       = "SELECT percentile(duration, 95) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
+    query       = "SELECT percentile(duration, 90) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND name LIKE '${var.select_transcation_name_like}' FACET name"
     since_value = "5"
   }
 

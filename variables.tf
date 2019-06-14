@@ -77,20 +77,26 @@ variable "error_5xx_threshold_count" {
   description = "The maximum count of 5XX errors in whole 5 minutes, triggers the alert."
 }
 
-variable "percentile95_database_transcation_threshold_seconds" {
+variable "error_5xx_threshold_percentage" {
   type        = "string"
-  description = "The maximum time taken by 95% of database transcations greater than it in whole 5 minutes, triggers the alert."
-}
-
-variable "percentile95_web_transaction_threshold_time" {
-  type        = "string"
-  description = "The maximum time taken by 95% of web transcations greater than it in whole 5 minutes, triggers the alert."
+  description = "The maximum percentage of 5XX errors in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
-variable "percentile95_transaction_threshold_seconds" {
+variable "database_transcation_threshold_seconds" {
   type        = "string"
-  description = "The maximum time taken by 95% of transcations greater than it in whole 5 minutes, triggers the alert."
+  description = "The maximum time taken by 90% of database transcations greater than it in whole 5 minutes, triggers the alert."
+}
+
+variable "web_transaction_threshold_time" {
+  type        = "string"
+  description = "The maximum time taken by 90% of web transcations greater than it in whole 5 minutes, triggers the alert."
+  default     = ""
+}
+
+variable "transaction_threshold_seconds" {
+  type        = "string"
+  description = "The maximum time taken by 90% of transcations greater than it in whole 5 minutes, triggers the alert."
   default     = ""
 }
 
