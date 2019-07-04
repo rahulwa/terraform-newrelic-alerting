@@ -6,9 +6,9 @@ A Terraform module for New Relic alerting with following preconfigured alerts fo
 - Host Not Reporting
 - Service Not Running
 - 5XX Error High
-- 95Percentile Database Call Slow
-- 95Percentile Web Transaction Call Slow
-- 95Percentile Transaction Call Slow
+- Database Call Slow
+- Web Requests High Latency
+- Transactions High Latency
 - Apdex Error
 - Error Percentage
 - Response Time Background Slow
