@@ -8,9 +8,15 @@ locals {
 }
 
 resource "newrelic_alert_policy" "this" {
-  name = "${local.alarm_label_prefix}"
+  count  = "${var.newrelic_alert_policy_name == "" ? 1 : 0}"
+  name   = "${local.alarm_label_prefix}"
 }
 
 data "newrelic_application" "app" {
   name = "${var.nr_service_name}"
+}
+
+data "newrelic_alert_policy" "this" {
+  name        = "${var.newrelic_alert_policy_name != "" ? "${var.newrelic_alert_policy_name}" : "${local.alarm_label_prefix}"}"
+  depends_on  = ["newrelic_alert_policy.this"]
 }

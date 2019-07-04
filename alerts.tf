@@ -1,6 +1,6 @@
 resource "newrelic_infra_alert_condition" "cpu_alert" {
   count      = "${var.cpu_utilisation_threshold_duration_minutes != "" ? 1 : 0}"
-  policy_id  = "${newrelic_alert_policy.this.id}"
+  policy_id  = "${data.newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_CPU_Utilisation"
   type       = "infra_metric"
   event      = "SystemSample"
@@ -17,7 +17,7 @@ resource "newrelic_infra_alert_condition" "cpu_alert" {
 
 resource "newrelic_infra_alert_condition" "memory_alert" {
   count      = "${var.memory_free_threshold_byte != "" ? 1 : 0}"
-  policy_id  = "${newrelic_alert_policy.this.id}"
+  policy_id  = "${data.newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_Memory_Utilisation"
   type       = "infra_metric"
   event      = "SystemSample"
@@ -34,7 +34,7 @@ resource "newrelic_infra_alert_condition" "memory_alert" {
 
 resource "newrelic_infra_alert_condition" "disk_alert" {
   count      = "${var.disk_free_threshold_percentage != "" ? 1 : 0}"
-  policy_id  = "${newrelic_alert_policy.this.id}"
+  policy_id  = "${data.newrelic_alert_policy.this.id}"
   name       = "${local.alarm_label_prefix}:High_Disk_Utilisation"
   type       = "infra_metric"
   event      = "SystemSample"
@@ -51,7 +51,7 @@ resource "newrelic_infra_alert_condition" "disk_alert" {
 
 resource "newrelic_infra_alert_condition" "host_not_reporting" {
   count     = "${var.host_not_responding_threshold_duration_minutes != "" ? 1 : 0}"
-  policy_id = "${newrelic_alert_policy.this.id}"
+  policy_id = "${data.newrelic_alert_policy.this.id}"
   name      = "${local.alarm_label_prefix}:Host_Not_Reporting"
   type      = "infra_host_not_reporting"
   where     = "${local.select_hosts_where_clause}"
@@ -63,7 +63,7 @@ resource "newrelic_infra_alert_condition" "host_not_reporting" {
 
 resource "newrelic_infra_alert_condition" "service_not_running" {
   count         = "${var.not_running_process_where_query != "" && var.service_unavailable_threshold_duration_minutes != "" ? 1 : 0}"
-  policy_id     = "${newrelic_alert_policy.this.id}"
+  policy_id     = "${data.newrelic_alert_policy.this.id}"
   name          = "${local.alarm_label_prefix}:Service_Not_Running"
   type          = "infra_process_running"
   comparison    = "equal"
@@ -78,7 +78,7 @@ resource "newrelic_infra_alert_condition" "service_not_running" {
 
 resource "newrelic_nrql_alert_condition" "5xx_error" {
   count       = "${var.error_5xx_threshold_count != "" ? 1 : 0}"
-  policy_id   = "${newrelic_alert_policy.this.id}"
+  policy_id   = "${data.newrelic_alert_policy.this.id}"
   name        = "${local.alarm_label_prefix}:5XX_Error_High"
   enabled     = true
   runbook_url = "${var.runbook_url}"
@@ -124,7 +124,7 @@ resource "newrelic_nrql_alert_condition" "5xx_percentage_error" {
 
 resource "newrelic_nrql_alert_condition" "db_long_durantion" {
   count       = "${var.database_transcation_threshold_seconds != "" ? 1 : 0}"
-  policy_id   = "${newrelic_alert_policy.this.id}"
+  policy_id   = "${data.newrelic_alert_policy.this.id}"
   name        = "${local.alarm_label_prefix}:Database_Call_Slow"
   enabled     = true
   runbook_url = "${var.runbook_url}"
@@ -147,7 +147,7 @@ resource "newrelic_nrql_alert_condition" "db_long_durantion" {
 
 resource "newrelic_nrql_alert_condition" "web_transaction_long_durantion" {
   count       = "${var.web_transaction_threshold_seconds != "" ? 1 : 0}"
-  policy_id   = "${newrelic_alert_policy.this.id}"
+  policy_id   = "${data.newrelic_alert_policy.this.id}"
   name        = "${local.alarm_label_prefix}:Web_Requests_High_Latency"
   enabled     = true
   runbook_url = "${var.runbook_url}"

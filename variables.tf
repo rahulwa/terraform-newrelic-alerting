@@ -24,6 +24,12 @@ variable "nr_service_name" {
   description = "New Relic app name that you want to monitor"
 }
 
+variable "newrelic_alert_policy_name" {
+  type        = "string"
+  description = "Name of newrelic policy where alert rules are going to be created if provided."
+  default     = ""
+}
+
 variable "runbook_url" {
   type        = "string"
   description = "URL of runbook for this service"
@@ -94,7 +100,7 @@ variable "database_transcation_threshold_seconds" {
   description = "The maximum time taken by 90% of database transcations greater than it in whole 5 minutes, triggers the alert."
 }
 
-variable "web_transaction_threshold_time" {
+variable "web_transaction_threshold_seconds" {
   type        = "string"
   description = "The maximum time taken by 90% of web transcations greater than it in whole 5 minutes, triggers the alert."
   default     = ""
