@@ -66,6 +66,12 @@ variable "select_transtion_request_uri_like" {
   default     = "%"
 }
 
+variable "allow_facet" {
+  type        = "string"
+  description = "If true, it add facets in NRQL alerts."
+  default     = true
+}
+
 variable "select_transcation_name_like" {
   type        = "string"
   description = "To select specific function name for alerting, like `'%function%'`."
