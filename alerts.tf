@@ -274,7 +274,7 @@ resource "newrelic_alert_condition" "response_time_web" {
 ########################### Generic NRQL alerts #############################################
 resource "newrelic_nrql_alert_condition" "nrql_generic" {
   count       = "${var.nrql_generic_name != "" && var.nrql_generic_query != "" && var.nrql_generic_threshold != "" ? 1 : 0}"
-  policy_id   = "${var.newrelic_alert_policy_id}"
+  policy_id   = "${data.newrelic_alert_policy.this.id}"
   name        = "${module.alarm_label_prefix.id}:${var.nrql_generic_name}"
   enabled     = true
   runbook_url = "${var.runbook_url}"
