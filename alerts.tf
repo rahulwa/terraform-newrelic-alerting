@@ -282,7 +282,7 @@ resource "newrelic_nrql_alert_condition" "nrql_generic" {
   term {
     duration      = 5
     operator      = "${var.nrql_generic_operator}"
-    priority      = "${var.priority}"
+    priority      = "critical"
     threshold     = "${var.nrql_generic_threshold}"
     time_function = "all"
   }
