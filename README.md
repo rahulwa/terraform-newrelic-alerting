@@ -14,9 +14,10 @@ A Terraform module for New Relic alerting with following preconfigured alerts fo
 - Response Time Background Slow
 - Response Time Web Slow
 
+And it also allows setup of any other type of alert using NRQL.
 For more info, look into [alerts.tf file](./alerts.tf).
 
-It can be used as
+It can be used as (though there are more tweaking can be done):
 
 ```hcl
 module "newrelic_alerts_sev1" {
@@ -39,5 +40,21 @@ module "newrelic_alerts_sev1" {
   response_time_background_threshold_seconds          = 3
   response_time_web_threshold_seconds                 = 1
   runbook_url                                         = "<RUNBOOK-URL>"               # Put here runbook url of application
+}
+```
+
+Any other type of alert can be setup using NRQL:
+```hcl
+module "newrelic_alerts_sev3_RabbimqHighMessages" {
+  source                       = "<PATH/TO/terraform-newrelic-alerting/"
+  # newrelic_alert_policy_name   = "<EXISTING_POLICY_NAME_IF_THESE_ALERTRULES_NEEDS_TO_BE_CREATED_INSIDE_IT_INSTEAD_OF_NEW_POLICY>
+  service_name                 = "RMQ"                        # put here name of application
+  severity                     = "severity3"
+  nr_service_name              = ""
+  runbook_url                  = "<RUNBOOK-URL>"              # Put here runbook url of application
+  nrql_generic_name            = "Messages_Explodes"
+  nrql_generic_query           = "SELECT average(queue.totalMessages) FROM RabbitmqQueueSample WHERE displayName NOT LIKE '%celery%' FACET displayName"
+  nrql_generic_operator        = "above"
+  nrql_generic_threshold       = 10000
 }
 ```
