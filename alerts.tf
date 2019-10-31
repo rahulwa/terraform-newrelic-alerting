@@ -92,7 +92,7 @@ resource "newrelic_nrql_alert_condition" "5xx_error" {
   }
 
   nrql {
-    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND response.status >= '500' AND request.uri LIKE '${var.select_transtion_request_uri_like}' ${var.allow_facet == "true" ? "FACET name" : ""}"
+    query       = "SELECT count(*) FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND (httpResponseCode >= '500' OR response.status >= '500') AND request.uri LIKE '${var.select_transtion_request_uri_like}' ${var.allow_facet == "true" ? "FACET name" : ""}"
     since_value = "5"
   }
 
@@ -115,7 +115,7 @@ resource "newrelic_nrql_alert_condition" "5xx_percentage_error" {
   }
 
   nrql {
-    query       = "SELECT percentage(count(*), where response.status >= '500') from Transaction WHERE appName IN ('${var.nr_service_name}') AND transactionType='Web' AND request.uri LIKE '${var.select_transtion_request_uri_like}' ${var.allow_facet == "true" ? "FACET name" : ""}"
+    query       = "SELECT percentage(count(*), WHERE response.status >= '500' OR httpResponseCode >= '500') FROM Transaction WHERE appName IN ('${var.nr_service_name}') AND transactionType='Web' AND request.uri LIKE '${var.select_transtion_request_uri_like}' ${var.allow_facet == "true" ? "FACET name" : ""}"
     since_value = "5"
   }
 
